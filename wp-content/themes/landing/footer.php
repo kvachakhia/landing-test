@@ -30,7 +30,7 @@
     jQuery(document).ready(function($) {
 
         $('.submit-button').on('click', function() {
-            resetErrors();  
+            resetErrors();
 
             var data = {
                 'action': 'send_message',
@@ -46,8 +46,11 @@
                 data: data,
                 success: function(resp) {
 
-                    var obj = jQuery.parseJSON(resp);
+                    if (resp === 'success') {
+                        location.reload();
+                    }
 
+                    var obj = jQuery.parseJSON(resp);
                     $.each(obj, function(i, v) {
                         console.log(i + " => " + v); // view in console for error messages
                         var msg = '<label class="error" for="' + i + '">' + v + '</label>';
@@ -55,6 +58,7 @@
                     });
                     var keys = Object.keys(resp);
                     $('input[name="' + keys[0] + '"]').focus();
+
 
                 }
             });

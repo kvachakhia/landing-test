@@ -942,6 +942,7 @@ footer {
 	display: flex;
 	justify-content: center;
 	margin-top: 150px;
+	margin-bottom: 150px;
 }
 
 .form-area {

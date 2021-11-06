@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying the footer
  *
@@ -11,24 +12,61 @@
 
 ?>
 
-	<footer id="colophon" class="site-footer">
-		<div class="site-info">
-			<a href="<?php echo esc_url( __( 'https://wordpress.org/', 'landing' ) ); ?>">
-				<?php
-				/* translators: %s: CMS name, i.e. WordPress. */
-				printf( esc_html__( 'Proudly powered by %s', 'landing' ), 'WordPress' );
-				?>
-			</a>
-			<span class="sep"> | </span>
-				<?php
-				/* translators: 1: Theme name, 2: Theme author. */
-				printf( esc_html__( 'Theme: %1$s by %2$s.', 'landing' ), 'landing', '<a href="https://dima.ge">Dimitri Kvachakhia</a>' );
-				?>
-		</div><!-- .site-info -->
-	</footer><!-- #colophon -->
-</div><!-- #page -->
+
+
+<footer>
+
+
+
+</footer>
+
+
+
 
 <?php wp_footer(); ?>
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<script>
+    jQuery(document).ready(function($) {
+
+        $('.submit-button').on('click', function() {
+            resetErrors();  
+
+            var data = {
+                'action': 'send_message',
+                'fname': $('#fname').val(),
+                'title': $('#title').val(),
+                'company': $('#company').val(),
+                'email': $('#email').val(),
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                data: data,
+                success: function(resp) {
+
+                    var obj = jQuery.parseJSON(resp);
+
+                    $.each(obj, function(i, v) {
+                        console.log(i + " => " + v); // view in console for error messages
+                        var msg = '<label class="error" for="' + i + '">' + v + '</label>';
+                        $('input[name="' + i + '"]').addClass('inputTxtError').after(msg);
+                    });
+                    var keys = Object.keys(resp);
+                    $('input[name="' + keys[0] + '"]').focus();
+
+                }
+            });
+        });
+    });
+
+    function resetErrors() {
+        $('form input, form select').removeClass('inputTxtError');
+        $('label.error').remove();
+    }
+</script>
 
 </body>
+
 </html>

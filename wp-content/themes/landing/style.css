@@ -66,6 +66,28 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
  * 1. Correct the line height in all browsers.
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
+ * {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+:root {
+	--primary: #00BAC6;
+}
+
+@font-face {
+	font-family: 'Montserrat-light';
+	src: url('./fonts/Montserrat-Light.ttf');
+}
+
+@font-face {
+	font-family: 'Montserrat-bold';
+	src: url('./fonts/Montserrat-Bold.ttf');
+}
+
+
+
 html {
 	line-height: 1.15;
 	-webkit-text-size-adjust: 100%;
@@ -127,6 +149,7 @@ pre {
  */
 a {
 	background-color: transparent;
+	text-decoration: none;
 }
 
 /**
@@ -380,7 +403,6 @@ template {
 
 /* Inherit box-sizing to more easily change it's value on a component level.
 @link http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
-*,
 *::before,
 *::after {
 	box-sizing: inherit;
@@ -495,8 +517,8 @@ ol {
 	list-style: decimal;
 }
 
-li > ul,
-li > ol {
+li>ul,
+li>ol {
 	margin-bottom: 0;
 	margin-left: 1.5em;
 }
@@ -637,333 +659,435 @@ textarea {
 	width: 100%;
 }
 
-/*--------------------------------------------------------------
-# Layouts
---------------------------------------------------------------*/
-
-/*--------------------------------------------------------------
-# Components
---------------------------------------------------------------*/
-
-/* Navigation
---------------------------------------------- */
-.main-navigation {
-	display: block;
-	width: 100%;
-}
-
-.main-navigation ul {
-	display: none;
-	list-style: none;
+figure {
 	margin: 0;
-	padding-left: 0;
+	height: 100%;
 }
 
-.main-navigation ul ul {
-	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+
+header {
+	height: 100%;
+	width: 100%;
 	float: left;
-	position: absolute;
-	top: 100%;
-	left: -999em;
-	z-index: 99999;
+	background: var(--primary);
+	padding: 0 20px;
+	color: #fff;
 }
 
-.main-navigation ul ul ul {
-	left: -999em;
-	top: 0;
+.container {
+	max-width: 1280px;
+	width: 100%;
+	margin: 0 auto;
 }
 
-.main-navigation ul ul li:hover > ul,
-.main-navigation ul ul li.focus > ul {
+.brand-logo {
+	max-width: 75px;
+	float: left;
+	padding: 14px 0px;
+}
+
+.brand-logo img {
+	max-width: 100%;
+}
+
+.navigation {
+	margin: 0px;
+	float: right;
+}
+
+.navigation li {
+	list-style: none;
+	float: left;
+	color: #fff;
+	font-size: 16px;
+	padding: 24px 20px;
+	text-transform: uppercase;
+	text-align: center;
 	display: block;
-	left: auto;
-}
-
-.main-navigation ul ul a {
-	width: 200px;
-}
-
-.main-navigation ul li:hover > ul,
-.main-navigation ul li.focus > ul {
-	left: auto;
-}
-
-.main-navigation li {
-	position: relative;
-}
-
-.main-navigation a {
-	display: block;
+	line-height: 22px;
 	text-decoration: none;
 }
 
-/* Small menu. */
-.menu-toggle,
-.main-navigation.toggled ul {
-	display: block;
+.navigation li a {
+	color: #fff;
+	padding-bottom: 2px;
+	font-weight: 500;
 }
 
-@media screen and (min-width: 37.5em) {
-
-	.menu-toggle {
-		display: none;
-	}
-
-	.main-navigation ul {
-		display: flex;
-	}
+.navigation li a i {
+	width: 100%;
+	font-size: 20px;
+	margin-bottom: 7px;
 }
 
-.site-main .comment-navigation,
-.site-main
-.posts-navigation,
-.site-main
-.post-navigation {
-	margin: 0 0 1.5em;
-}
-
-.comment-navigation .nav-links,
-.posts-navigation .nav-links,
-.post-navigation .nav-links {
-	display: flex;
-}
-
-.comment-navigation .nav-previous,
-.posts-navigation .nav-previous,
-.post-navigation .nav-previous {
-	flex: 1 0 50%;
-}
-
-.comment-navigation .nav-next,
-.posts-navigation .nav-next,
-.post-navigation .nav-next {
-	text-align: end;
-	flex: 1 0 50%;
-}
-
-/* Posts and pages
---------------------------------------------- */
-.sticky {
-	display: block;
-}
-
-.post,
-.page {
-	margin: 0 0 1.5em;
-}
-
-.updated:not(.published) {
+.show-menu-btn,
+.hide-menu-btn {
+	transition: 0.4s;
+	font-size: 30px;
+	cursor: pointer;
 	display: none;
 }
 
-.page-content,
-.entry-content,
-.entry-summary {
-	margin: 1.5em 0 0;
+.show-menu-btn {
+	margin: 0px;
+	float: right;
 }
 
-.page-links {
-	clear: both;
-	margin: 0 0 1.5em;
+.show-menu-btn i {
+	line-height: 100px;
 }
 
-/* Comments
---------------------------------------------- */
-.comment-content a {
-	word-wrap: break-word;
+
+
+#toggle-btn {
+	position: absolute;
+	visibility: hidden;
+	z-index: -1111;
 }
 
-.bypostauthor {
-	display: block;
+/*-- Responsive CSS --*/
+@media screen and (max-width:767px) {
+
+	.show-menu-btn,
+	.hide-menu-btn {
+		display: block;
+	}
+
+	.navigation {
+		position: fixed;
+		width: 100%;
+		height: 100vh;
+		background: var(--primary);
+		top: -100%;
+		left: 0;
+		padding: 50px 0px;
+		transition: 1s;
+		z-index: 99;
+	}
+
+	.navigation li {
+		width: 100%;
+	}
+
+	.navigation li a {
+		padding: 15px 15px;
+		text-align: left;
+	}
+
+	.navigation li a i {
+		width: auto;
+		font-size: 20px;
+	}
+
+	.hide-menu-btn {
+		position: absolute;
+		top: 15px;
+		right: 20px;
+	}
+
+	#toggle-btn:checked~nav .navigation {
+		top: 0px;
+	}
 }
 
-/* Widgets
---------------------------------------------- */
-.widget {
-	margin: 0 0 1.5em;
+.active {
+	border-bottom: 1px solid #FFFFFF;
 }
 
-.widget select {
-	max-width: 100%;
+.hero {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+	margin-bottom: 45px;
 }
 
-/* Media
---------------------------------------------- */
-.page-content .wp-smiley,
-.entry-content .wp-smiley,
-.comment-content .wp-smiley {
-	border: none;
-	margin-bottom: 0;
-	margin-top: 0;
+.hero-img-area {
+	height: 560px;
+	clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.hero-img-area img {
+	height: 100%;
+	margin: 0;
 	padding: 0;
 }
 
-/* Make sure logo link wraps around logo image. */
-.custom-logo-link {
-	display: inline-block;
+.hero-text-area {
+	padding: 108px 81px;
 }
 
-/* Captions
---------------------------------------------- */
-.wp-caption {
-	margin-bottom: 1.5em;
-	max-width: 100%;
+.hero-text-area h1 {
+	max-width: 640px;
+	font-family: Montserrat-light;
+	font-size: 40px;
+	line-height: 48px;
+	color: #4A4A4A;
 }
 
-.wp-caption img[class*="wp-image-"] {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
+.hero-text-area p {
+	max-width: 640px;
+	margin: 0;
+	font-family: Montserrat-light;
+	font-size: 20px;
+	line-height: 31px;
+	color: #4A4A4A;
 }
 
-.wp-caption .wp-caption-text {
-	margin: 0.8075em 0;
+.hero-text-area p a {
+	color: var(--primary);
+	font-family: 'Montserrat-bold';
 }
 
-.wp-caption-text {
-	text-align: center;
-}
-
-/* Galleries
---------------------------------------------- */
-.gallery {
-	margin-bottom: 1.5em;
-	display: grid;
-	grid-gap: 1.5em;
-}
-
-.gallery-item {
-	display: inline-block;
-	text-align: center;
+.wrapper {
+	max-width: 1191px;
+	margin: 0 auto;
 	width: 100%;
 }
 
-.gallery-columns-2 {
-	grid-template-columns: repeat(2, 1fr);
+.vote {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
 }
 
-.gallery-columns-3 {
-	grid-template-columns: repeat(3, 1fr);
+.vote-img-area {
+	max-width: 584px;
+	height: 584px;
+	width: 100%;
 }
 
-.gallery-columns-4 {
-	grid-template-columns: repeat(4, 1fr);
+.vote-img-area {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
-.gallery-columns-5 {
-	grid-template-columns: repeat(5, 1fr);
+.vote-text-area {
+	place-self: center;
 }
 
-.gallery-columns-6 {
-	grid-template-columns: repeat(6, 1fr);
+.vote-text-area h1 {
+	max-width: 460px;
+	font-family: Montserrat-light;
+	font-size: 30px;
+	font-weight: 300;
+	line-height: 41px;
+	color: #000;
+	margin-bottom: 31px;
 }
 
-.gallery-columns-7 {
-	grid-template-columns: repeat(7, 1fr);
+.vote-text-area p {
+	max-width: 530px;
+	font-family: Montserrat-light;
+	font-size: 20px;
+	font-weight: 300;
+	line-height: 30px;
+	color: #000;
+	margin-bottom: 31px;
 }
 
-.gallery-columns-8 {
-	grid-template-columns: repeat(8, 1fr);
+section.vote {
+	margin-bottom: 21px;
 }
 
-.gallery-columns-9 {
-	grid-template-columns: repeat(9, 1fr);
+.voters {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
 }
 
-.gallery-caption {
-	display: block;
+.voters-img-area {
+	max-width: 584px;
+	height: 584px;
+	width: 100%;
 }
 
-/*--------------------------------------------------------------
-# Plugins
---------------------------------------------------------------*/
-
-/* Jetpack infinite scroll
---------------------------------------------- */
-
-/* Hide the Posts Navigation and the Footer when Infinite Scroll is in use. */
-.infinite-scroll .posts-navigation,
-.infinite-scroll.neverending .site-footer {
-	display: none;
+.voters-img-area {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
-/* Re-display the Theme Footer when Infinite Scroll has reached its end. */
-.infinity-end.neverending .site-footer {
-	display: block;
+.voters-text-area {
+	place-self: center;
 }
 
-/*--------------------------------------------------------------
-# Utilities
---------------------------------------------------------------*/
-
-/* Accessibility
---------------------------------------------- */
-
-/* Text meant only for screen readers. */
-.screen-reader-text {
-	border: 0;
-	clip: rect(1px, 1px, 1px, 1px);
-	clip-path: inset(50%);
-	height: 1px;
-	margin: -1px;
-	overflow: hidden;
-	padding: 0;
-	position: absolute !important;
-	width: 1px;
-	word-wrap: normal !important;
+.voters-text-area h1 {
+	max-width: 460px;
+	font-family: Montserrat-light;
+	font-size: 30px;
+	font-weight: 300;
+	line-height: 41px;
+	color: #000;
+	margin-bottom: 31px;
 }
 
-.screen-reader-text:focus {
-	background-color: #f1f1f1;
-	border-radius: 3px;
-	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
-	clip: auto !important;
-	clip-path: none;
-	color: #21759b;
-	display: block;
-	font-size: 0.875rem;
-	font-weight: 700;
-	height: auto;
-	left: 5px;
-	line-height: normal;
-	padding: 15px 23px 14px;
-	text-decoration: none;
-	top: 5px;
-	width: auto;
-	z-index: 100000;
+.voters-text-area p {
+	max-width: 530px;
+	font-family: Montserrat-light;
+	font-size: 20px;
+	font-weight: 300;
+	line-height: 30px;
+	color: #000;
+	margin-bottom: 31px;
 }
 
-/* Do not show the outline on the skip link target. */
-#primary[tabindex="-1"]:focus {
-	outline: 0;
+
+footer {
+	background: var(--primary);
 }
 
-/* Alignments
---------------------------------------------- */
-.alignleft {
-
-	/*rtl:ignore*/
-	float: left;
-
-	/*rtl:ignore*/
-	margin-right: 1.5em;
-	margin-bottom: 1.5em;
+.form-section {
+	display: flex;
+	justify-content: center;
+	margin-top: 150px;
 }
 
-.alignright {
-
-	/*rtl:ignore*/
-	float: right;
-
-	/*rtl:ignore*/
-	margin-left: 1.5em;
-	margin-bottom: 1.5em;
+.form-area {
+	box-shadow: 0px 0px 26px rgba(0, 0, 0, 0.25);
+	border-radius: 41px;
+	padding: 60px 83px;
+	max-width: 829px;
 }
 
-.aligncenter {
-	clear: both;
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 1.5em;
+.form-area h2 {
+	font-family: 'Montserrat-light';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 30px;
+	line-height: 37px;
+	/* or 123% */
+	text-align: center;
+	color: #000000;
+	margin-bottom: 28px;
+}
+
+
+.form-area form label {
+	font-family: 'Montserrat-light';
+	font-style: normal;
+	font-weight: 300;
+	font-size: 16px;
+	line-height: 21px;
+	display: inline-flex;
+	width: 100%;
+}
+
+.form-area form input {
+	width: 100%;
+	padding: 3px 9px;
+	margin: 8px 0;
+	display: inline-block;
+	border: 1px solid #979797;
+	box-sizing: border-box;
+	box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.5);
+	margin-top: 0;
+}
+
+.form-area .button-group {
+	display: flex;
+	justify-content: center;
+}
+
+.form-area .submit-button {
+	width: 100%;
+	max-width: 185px;
+	background-color: var(--primary);
+	color: white;
+	padding: 14px 10px;
+	margin: 8px 0;
+	letter-spacing: 1.9px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 18px;
+	font-family: 'Montserrat-bold';
+}
+
+
+@media (min-width: 320px) and (max-width: 580px) {
+
+	.hero {
+		width: 100%;
+		display: flex;
+		justify-content: unset;
+		box-shadow: none;
+		margin-bottom: 23px;
+		flex-direction: column;
+	}
+
+	.hero-text-area {
+		padding: 50px;
+	}
+
+	.hero-img-area {
+		height: 333px;
+		object-fit: cover;
+		clip-path: polygon(0 7%, 100% 0, 100% 100%, 0% 100%);
+	}
+
+	.hero-img-area img {
+		object-fit: cover;
+	}
+
+	.vote {
+		flex-direction: column;
+	}
+
+	.vote-text-area {
+		place-self: normal;
+		padding: 8px 50px;
+	}
+
+	.vote-text-area h1 {
+		font-size: 27px;
+		line-height: 29px;
+	}
+
+	.vote-text-area p {
+		font-size: 15px;
+		line-height: 24px;
+	}
+
+	.voters {
+		flex-direction: column-reverse;
+	}
+
+	.voters-text-area {
+		place-self: normal;
+		padding: 8px 50px;
+	}
+
+	.voters-text-area h1 {
+		font-size: 27px;
+		line-height: 29px;
+	}
+
+	.voters-text-area p {
+		font-size: 15px;
+		line-height: 24px;
+	}
+
+	.form-section {
+		margin-top: 90px;
+	}
+
+	.form-area {
+		padding: 60px 37px;
+		max-width: 100%;
+	}
+}
+
+
+.error {
+	color: #ff0000;
+	font-size: 12px;
+	margin-top: 5px;
+	margin-bottom: 0;
+}
+
+.inputTxtError {
+	border: 1px solid #ff0000 !important;
+	color: #0e0e0e;
 }

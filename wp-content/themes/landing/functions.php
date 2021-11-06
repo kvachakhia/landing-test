@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Landing functions and definitions
  *
@@ -7,12 +8,12 @@
  * @package Landing
  */
 
-if ( ! defined( '_S_VERSION' ) ) {
+if (!defined('_S_VERSION')) {
 	// Replace the version number of the theme on each release.
-	define( '_S_VERSION', '1.0.0' );
+	define('_S_VERSION', '1.0.0');
 }
 
-if ( ! function_exists( 'landing_setup' ) ) :
+if (!function_exists('landing_setup')) :
 	/**
 	 * Sets up theme defaults and registers support for various WordPress features.
 	 *
@@ -20,17 +21,18 @@ if ( ! function_exists( 'landing_setup' ) ) :
 	 * runs before the init hook. The init hook is too late for some features, such
 	 * as indicating support for post thumbnails.
 	 */
-	function landing_setup() {
+	function landing_setup()
+	{
 		/*
 		 * Make theme available for translation.
 		 * Translations can be filed in the /languages/ directory.
 		 * If you're building a theme based on Landing, use a find and replace
 		 * to change 'landing' to the name of your theme in all the template files.
 		 */
-		load_theme_textdomain( 'landing', get_template_directory() . '/languages' );
+		load_theme_textdomain('landing', get_template_directory() . '/languages');
 
 		// Add default posts and comments RSS feed links to head.
-		add_theme_support( 'automatic-feed-links' );
+		add_theme_support('automatic-feed-links');
 
 		/*
 		 * Let WordPress manage the document title.
@@ -38,19 +40,19 @@ if ( ! function_exists( 'landing_setup' ) ) :
 		 * hard-coded <title> tag in the document head, and expect WordPress to
 		 * provide it for us.
 		 */
-		add_theme_support( 'title-tag' );
+		add_theme_support('title-tag');
 
 		/*
 		 * Enable support for Post Thumbnails on posts and pages.
 		 *
 		 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
 		 */
-		add_theme_support( 'post-thumbnails' );
+		add_theme_support('post-thumbnails');
 
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus(
 			array(
-				'menu-1' => esc_html__( 'Primary', 'landing' ),
+				'menu-1' => esc_html__('Primary', 'landing'),
 			)
 		);
 
@@ -84,7 +86,7 @@ if ( ! function_exists( 'landing_setup' ) ) :
 		);
 
 		// Add theme support for selective refresh for widgets.
-		add_theme_support( 'customize-selective-refresh-widgets' );
+		add_theme_support('customize-selective-refresh-widgets');
 
 		/**
 		 * Add support for core custom logo.
@@ -102,79 +104,90 @@ if ( ! function_exists( 'landing_setup' ) ) :
 		);
 	}
 endif;
-add_action( 'after_setup_theme', 'landing_setup' );
-
-/**
- * Set the content width in pixels, based on the theme's design and stylesheet.
- *
- * Priority 0 to make it available to lower priority callbacks.
- *
- * @global int $content_width
- */
-function landing_content_width() {
-	$GLOBALS['content_width'] = apply_filters( 'landing_content_width', 640 );
-}
-add_action( 'after_setup_theme', 'landing_content_width', 0 );
-
-/**
- * Register widget area.
- *
- * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
- */
-function landing_widgets_init() {
-	register_sidebar(
-		array(
-			'name'          => esc_html__( 'Sidebar', 'landing' ),
-			'id'            => 'sidebar-1',
-			'description'   => esc_html__( 'Add widgets here.', 'landing' ),
-			'before_widget' => '<section id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</section>',
-			'before_title'  => '<h2 class="widget-title">',
-			'after_title'   => '</h2>',
-		)
-	);
-}
-add_action( 'widgets_init', 'landing_widgets_init' );
+add_action('after_setup_theme', 'landing_setup');
 
 /**
  * Enqueue scripts and styles.
  */
-function landing_scripts() {
-	wp_enqueue_style( 'landing-style', get_stylesheet_uri(), array(), _S_VERSION );
-	wp_style_add_data( 'landing-style', 'rtl', 'replace' );
+function landing_scripts()
+{
+	wp_enqueue_style('landing-style', get_stylesheet_uri(), array(), _S_VERSION);
+}
+add_action('wp_enqueue_scripts', 'landing_scripts');
 
-	wp_enqueue_script( 'landing-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		wp_enqueue_script( 'comment-reply' );
+
+add_action('wp_ajax_send_message', 'send_message');
+add_action('wp_ajax_nopriv_send_message', 'send_message');
+add_filter('wp_mail_content_type', 'mail_content_type');
+
+
+function send_message()
+{
+	if (isset($_POST)) {
+
+		if (empty($_POST['fname'])) {
+			$_SESSION['errors']['fname'] = 'Name is missing';
+		}
+
+		if (empty($_POST['title'])) {
+			$_SESSION['errors']['title'] = 'Title is missing';
+		}
+
+		if (empty($_POST['company'])) {
+			$_SESSION['errors']['company'] = 'Company is missing';
+		}
+
+		if (empty($_POST['email'])) {
+			$_SESSION['errors']['email'] = 'Email is missing';
+		}
+
+		if (!empty($_POST['email']) && !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+			$_SESSION['errors']['email'] = 'is not a valid email address';
+		}
+
+		if (count($_SESSION['errors']) > 0) {
+			//This is for ajax requests:
+			if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+				echo json_encode($_SESSION['errors']);
+				exit;
+			}
+			//This is when Javascript is turned off:
+			echo '<ul>';
+			foreach ($_SESSION['errors'] as $key => $value) {
+				echo '<li>' . $value . '</li>';
+			}
+			echo '</ul>';
+			exit;
+		} else {
+
+			$to = get_option('admin_email');
+			$headers = 'From: ' . $_POST['fname'] . ' <"' . $_POST['email'] . '">';
+			$subject = "New Message from " . $_POST['fname'];
+
+			ob_start();
+
+			echo 'Title:' . $_POST['title'] . '<br>' . 'Name:' . $_POST['fname'] . '<br>' . 'Company:' . $_POST['company'] . '<br>' . 'Email:' . $_POST['email'];
+
+			$message = ob_get_contents();
+
+			ob_end_clean();
+
+
+			$mail = wp_mail($to, $subject, $message, $headers);
+
+			if ($mail) {
+				echo 'success';
+			}
+		}
 	}
-}
-add_action( 'wp_enqueue_scripts', 'landing_scripts' );
 
-/**
- * Implement the Custom Header feature.
- */
-require get_template_directory() . '/inc/custom-header.php';
 
-/**
- * Custom template tags for this theme.
- */
-require get_template_directory() . '/inc/template-tags.php';
 
-/**
- * Functions which enhance the theme by hooking into WordPress.
- */
-require get_template_directory() . '/inc/template-functions.php';
-
-/**
- * Customizer additions.
- */
-require get_template_directory() . '/inc/customizer.php';
-
-/**
- * Load Jetpack compatibility file.
- */
-if ( defined( 'JETPACK__VERSION' ) ) {
-	require get_template_directory() . '/inc/jetpack.php';
+	exit();
 }
 
+function mail_content_type()
+{
+	return "text/html";
+}
